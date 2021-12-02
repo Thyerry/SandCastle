@@ -1,6 +1,12 @@
-﻿public class Ficha
+﻿using MongoDB.Bson.Serialization.Attributes;
+
+public class Ficha
 {
-    public int Id { get; set; }
+    [BsonId]
+    [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
+    public string Id { get; set; }
+
+    [BsonElement("Nome")]
     public string? Nome { get; set; }
     public string? Classe { get; set; }
     public string? Especificidades { get; set; }
