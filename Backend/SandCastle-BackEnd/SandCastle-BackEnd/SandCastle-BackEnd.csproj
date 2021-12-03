@@ -7,6 +7,7 @@
     <RootNamespace>SandCastle_BackEnd</RootNamespace>
     <UserSecretsId>28670d5c-932b-4045-82a3-703bf48181e7</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
   </PropertyGroup>
 
   <ItemGroup>

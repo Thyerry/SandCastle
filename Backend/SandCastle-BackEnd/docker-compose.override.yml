@@ -1,0 +1,25 @@
+version: '3.4'
+
+services:
+  sandcastle-db:
+    container_name: sandcastle-db
+    restart: always
+    ports:
+        - "27017:27017"
+    volumes:
+        - mongo_data:/data/db
+
+  sandcastle-backend:
+    container_name: sandcastle-backend
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - "DatabaseSettings:ConnectionString=mongodb://sandcastledb:28018"
+    depends_on:
+        - sandcastle-db
+    ports:
+      - "80"
+      - "443"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro

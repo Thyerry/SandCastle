@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SandCastle-BackEnd", "SandCastle-BackEnd\SandCastle-BackEnd.csproj", "{3E3696FF-981E-4263-8FF2-6CD7488B7519}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SandCastle-BackEnd", "SandCastle-BackEnd\SandCastle-BackEnd.csproj", "{3E3696FF-981E-4263-8FF2-6CD7488B7519}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{0C4EBDD1-3A43-4B53-9168-5AE2DEC56F23}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{3E3696FF-981E-4263-8FF2-6CD7488B7519}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3E3696FF-981E-4263-8FF2-6CD7488B7519}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3E3696FF-981E-4263-8FF2-6CD7488B7519}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C4EBDD1-3A43-4B53-9168-5AE2DEC56F23}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C4EBDD1-3A43-4B53-9168-5AE2DEC56F23}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C4EBDD1-3A43-4B53-9168-5AE2DEC56F23}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C4EBDD1-3A43-4B53-9168-5AE2DEC56F23}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

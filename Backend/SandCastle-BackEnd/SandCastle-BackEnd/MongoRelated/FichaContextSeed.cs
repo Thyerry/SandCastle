@@ -9,16 +9,11 @@ namespace SandCastle_BackEnd.MongoRelated
             bool ficha = fichaCollection.Find(p => true).Any();
             if (!ficha)
             {
-                fichaCollection.InsertMany(GetFichas());
+                fichaCollection.InsertOne(new Ficha()
+                {
+                    Nome = "Thyerry"
+                });
             }
-        }
-
-        private static IEnumerable<Ficha> GetFichas()
-        {
-            return new List<Ficha>() 
-            {
-                new Ficha()
-            };
         }
     }
 }
