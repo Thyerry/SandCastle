@@ -44,7 +44,7 @@ app.MapPost("/Fichas", async (Ficha insert) =>
 app.MapPut("/Fichas/", async (Ficha update) =>
 {
     var result = await fichaContext.Fichas.ReplaceOneAsync(f => f.Id == update.Id, update);
-    return result;
+    return update;
 });
 
 // Deleta uma ficha específica

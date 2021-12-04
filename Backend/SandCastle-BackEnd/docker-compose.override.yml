@@ -14,7 +14,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=https://+:443;http://+:80
-      - "DatabaseSettings:ConnectionString=mongodb://sandcastledb:28018"
+      - "DatabaseSettings:ConnectionString=mongodb://sandcastle-db:27017"
     depends_on:
         - sandcastle-db
     ports:
