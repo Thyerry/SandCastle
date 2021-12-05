@@ -5,7 +5,17 @@
       "ProjectGuid": "3e3696ff-981e-4263-8ff2-6cd7488b7519",
       "DisplayName": "SandCastle-BackEnd",
       "ColorIndex": 0
+    },
+    "0c4ebdd1-3a43-4b53-9168-5ae2dec56f23": {
+      "ProjectGuid": "0c4ebdd1-3a43-4b53-9168-5ae2dec56f23",
+      "DisplayName": "docker-compose",
+      "ColorIndex": 1
+    },
+    "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3": {
+      "ProjectGuid": "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3",
+      "DisplayName": "Miscellaneous Files",
+      "ColorIndex": -1
     }
   },
-  "NextColorIndex": 1
+  "NextColorIndex": 2
 }
