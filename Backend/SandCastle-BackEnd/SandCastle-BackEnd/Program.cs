@@ -8,6 +8,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddCors(options => 
+{
+    options.AddPolicy(name: "_myAllowAnyOrigins",
+                      builder =>
+                      {
+                          builder.AllowAnyOrigin();
+                      });
+});
 
 var mongoContext = new MongoContext(builder.Configuration);
 
@@ -18,7 +26,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseSwagger();
-
+app.UseCors();
 #region Fichas
 
 // Pega todas as Fichas
@@ -93,59 +101,152 @@ app.MapDelete("/Fichas/{id}", (Func<string, Task<dynamic>>)(async id =>
 
 #region Jogador
 
-app.MapGet("/Jogador", async () =>
+app.MapGet("/Jogador", (Func<Task<dynamic>>) (async () =>
 {
-    var result = await mongoContext.Jogadores.FindAsync(p => true);
-    return result.ToList();
-});
+    try
+    {
+        var result = (await mongoContext.Jogadores.FindAsync(p => true)).ToList();
 
-app.MapGet("/Jogador/{id}", async (string id) =>
-{
-    var result = await mongoContext.Jogadores.FindAsync(p => p.Id == id);
-    return result.FirstOrDefault();
-});
+        if (!result.Any())
+            return new ErroReturn { Erro = "não existem jogadores cadastradas" };
 
-app.MapPost("/Jogador", async (Jogador insert) =>
+        return result;
+    }
+    catch (Exception)
+    {
+        return new ErroReturn { Erro = "id no formato invalido" };
+    }
+}));
+
+app.MapGet("/Jogador/{id}", (Func<string, Task<dynamic>>)(async id =>
 {
-    await mongoContext.Jogadores.InsertOneAsync(insert);
+    try
+    {
+        var result = (await mongoContext.Jogadores.FindAsync(p => p.Id == id)).FirstOrDefault();
+
+        if (result == null)
+            return new ErroReturn { Erro = $"Não existe jogadore cadastrado no id {id}" };
+
+        return result;
+    }
+    catch (Exception)
+    {
+        return new ErroReturn { Erro = "erro: id invalido" };
+    }
+}));
+
+app.MapPost("/Jogador", (Func<Jogador, Task<dynamic>>)(async insert =>
+{
+    try
+    {
+        await mongoContext.Jogadores.InsertOneAsync(insert);
+    }
+    catch (Exception e)
+    {
+        return new ErroReturn { Erro = $"erro: Não foi possível criar a jogo! Detalhes do erro: {e.Message}" };
+    }
+
     return HttpStatusCode.Created;
-});
+}));
 
-app.MapPut("/Jogador/", async (Jogador update) =>
+app.MapPut("/Jogador/", (Func<Jogador, Task<dynamic>>)(async update =>
 {
-    var result = await mongoContext.Jogadores.ReplaceOneAsync(f => f.Id == update.Id, update);
-    return update;
-});
+    try
+    {
+        var result = (await mongoContext.Jogadores.FindAsync(j => j.Id == update.Id)).FirstOrDefault();
 
-app.MapDelete("/Jogador/{id}", (string id) => mongoContext.Jogadores.FindOneAndDelete(p => p.Id == id));
+        if (result == null)
+            return new ErroReturn { Erro = $"não existe jogo cadastrado no id {update.Id}" };
 
+        return await mongoContext.Jogadores.ReplaceOneAsync(f => f.Id == update.Id, update);
+    }
+    catch (Exception)
+    {
+        return new ErroReturn { Erro = "erro: id invalido" };
+    }
+}));
+
+app.MapDelete("/Jogadore/{id}", (Func<string, Task<dynamic>>)(async id =>
+{
+    try
+    {
+        var result = await mongoContext.Jogadores.FindOneAndDeleteAsync(p => p.Id == id);
+        return result;
+    }
+    catch (Exception)
+    {
+        return new ErroReturn { Erro = "erro: id invalido" };
+    }
+}));
 #endregion Jogador
 
 #region Jogo
 
-app.MapGet("/Jogo", async () =>
+app.MapGet("/Jogo", (Func<Task<dynamic>>) (async () =>
 {
-    var result = await mongoContext.Jogos.FindAsync(p => true);
-    return result.ToList();
-});
+    try
+    {
+        var result = (await mongoContext.Jogos.FindAsync(p => true)).ToList();
 
-app.MapGet("/Jogo/{id}", async (string id) =>
-{
-    var result = await mongoContext.Jogos.FindAsync(p => p.Id == id);
-    return result.FirstOrDefault();
-});
+        if (!result.Any())
+            return new ErroReturn { Erro = "não existem jogos cadastradas" };
 
-app.MapPost("/Jogo", async (Jogo insert) =>
+        return result;
+    }
+    catch (Exception)
+    {
+        return new ErroReturn { Erro = "id no formato invalido" };
+    }
+
+}));
+
+app.MapGet("/Jogo/{id}", (Func<string, Task<dynamic>>)(async id =>
 {
-    await mongoContext.Jogos.InsertOneAsync(insert);
+    try
+    {
+        var result = (await mongoContext.Jogos.FindAsync(p => p.Id == id)).FirstOrDefault();
+
+        if(result == null)
+            return new ErroReturn { Erro = $"Não existe jogo cadastrado no id {id}" };
+
+        return result;
+    }
+    catch (Exception)
+    {
+        return new ErroReturn { Erro = "erro: id invalido" };
+    }
+}));
+
+app.MapPost("/Jogo", (Func<Jogo, Task<dynamic>>) (async insert =>
+{
+    try
+    {
+        await mongoContext.Jogos.InsertOneAsync(insert);
+    }
+    catch (Exception e)
+    {
+        return new ErroReturn { Erro = $"erro: Não foi possível criar a jogo! Detalhes do erro: {e.Message}" };
+    }
+
     return HttpStatusCode.Created;
-});
+}));
 
-app.MapPut("/Jogo/", async (Jogo update) =>
+app.MapPut("/Jogo/", (Func<Jogo, Task<dynamic>>) (async  update =>
 {
-    var result = await mongoContext.Jogos.ReplaceOneAsync(f => f.Id == update.Id, update);
-    return update;
-});
+    try
+    {
+        var result = (await mongoContext.Jogos.FindAsync(j => j.Id == update.Id)).FirstOrDefault();
+
+        if (result == null)
+            return new ErroReturn { Erro = $"não existe jogo cadastrado no id {update.Id}" };
+
+        return await mongoContext.Jogos.ReplaceOneAsync(f => f.Id == update.Id, update);
+    }
+    catch (Exception)
+    {
+        return new ErroReturn { Erro = "erro: id invalido" };
+    }
+}));
 
 app.MapPut("/Jogo/{idJogo}/{idJogador}", async (string idJogo, string idJogador) =>
 {
@@ -164,16 +265,24 @@ app.MapPut("/Jogo/{idJogo}/{idJogador}", async (string idJogo, string idJogador)
     return update;
 });
 
-app.MapDelete("/Jogo/{id}", (string id) => mongoContext.Jogos.FindOneAndDelete(p => p.Id == id));
+app.MapDelete("/Jogo/{id}", (Func<string, Task<dynamic>>)(async id =>
+{
+    try
+    {
+        var result = await mongoContext.Jogos.FindOneAndDeleteAsync(p => p.Id == id);
+        return result;
+    }
+    catch (Exception)
+    { 
+        return new ErroReturn { Erro = "erro: id invalido" };
+    }
+}));
 
 #endregion Jogo
 
 app.UseSwaggerUI();
 
 app.Run();
-
-
-
 
 public class ErroReturn
 {
