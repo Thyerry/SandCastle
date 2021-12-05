@@ -10,5 +10,7 @@ namespace SandCastle_BackEnd.Entidades
         public string? Id { get; set; }
         public string? Nome { get; set; }
         public TipoJogador Tipo{ get; set; }
+        public List<string>? Fichas { get; set; }
+        public List<string>? Jogos { get; set; }
     }
 }

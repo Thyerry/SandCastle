@@ -54,17 +54,70 @@ app.MapGet("/Fichas/{id}", (Func<string, Task<dynamic>>)(async id =>
     }
 }));
 
+// Pega fichas de um jogo específico
+app.MapGet("/Fichas/Jogo/{id}", (Func<string, Task<dynamic>>)(async idJogo =>
+{
+    try
+    {
+        var result = (await mongoContext.Fichas.FindAsync(p => p.IdJogo == idJogo)).ToList();
+
+        if (!result.Any())
+            return new ErroReturn { Erro = "Não existem fichas cadastradas para este jogo." };
+
+
+        return result.ToList();
+    }
+    catch (Exception)
+    {
+        return new ErroReturn { Erro = "Id invalido" };
+    }
+}));
+
+// Pega ficha de um jogador específico
+app.MapGet("/Fichas/Jogador/{id}", (Func<string, Task<dynamic>>)(async idJogador =>
+{
+    try
+    {
+        var result = (await mongoContext.Fichas.FindAsync(p => p.IdJogador == idJogador)).ToList();
+
+        if (!result.Any())
+            return new ErroReturn { Erro = "Não existem fichas cadastradas para este jogador." };
+
+        return result.ToList();
+    }
+    catch (Exception)
+    {
+        return new ErroReturn { Erro = "Id invalido" };
+    }
+}));
+
 // Cria nova Ficha
 app.MapPost("/Fichas", (Func<Ficha, Task<dynamic>>)(async insert =>
 {
     try
     {
         await mongoContext.Fichas.InsertOneAsync(insert);
+
+        if (insert.Id != null)
+        {
+            var jogador = (await mongoContext.Jogadores.FindAsync(j => j.Id == insert.Id)).FirstOrDefault();
+
+            if (jogador != null)
+            {
+                if (jogador.Fichas != null)
+                    jogador.Fichas.Add(insert.Id);
+                else
+                    jogador.Fichas = new List<string> { insert.Id };
+
+                await mongoContext.Jogadores.ReplaceOneAsync(j => j.Id == jogador.Id, jogador);
+            }
+        }
     }
     catch (Exception e)
     {
         return new ErroReturn { Erro = $"erro: Não foi possível criar a ficha! Detalhes do erro: {e.Message}" };
     }
+
 
     return HttpStatusCode.Created;
 }));
@@ -135,6 +188,31 @@ app.MapGet("/Jogador/{id}", (Func<string, Task<dynamic>>)(async id =>
     }
 }));
 
+app.MapGet("/Jogador/Jogos/{id}", (Func<string, Task<dynamic>>)(async id =>
+{
+    try
+    {
+        var idJogadores = (await mongoContext.Jogos.FindAsync(p => p.Id == id)).FirstOrDefault();
+        var result = new List<Jogador>();
+
+        foreach (var idJogador in idJogadores.Jogadores)
+            result.Add(mongoContext.Jogadores.Find(j => j.Id == idJogador).FirstOrDefault());
+
+        if (!result.Any())
+            return new ErroReturn { Erro = $"Não existe jogadores cadastrados no jogo de id {id}" };
+
+        return result;
+    }
+    catch (NullReferenceException e)
+    {
+        return new ErroReturn { Erro = "o jogador não está cadastrado em nenhum jogo!" };
+    }
+    catch (Exception)
+    {
+        return new ErroReturn { Erro = "id invalido" };
+    }
+}));
+
 app.MapPost("/Jogador", (Func<Jogador, Task<dynamic>>)(async insert =>
 {
     try
@@ -166,7 +244,7 @@ app.MapPut("/Jogador/", (Func<Jogador, Task<dynamic>>)(async update =>
     }
 }));
 
-app.MapDelete("/Jogadore/{id}", (Func<string, Task<dynamic>>)(async id =>
+app.MapDelete("/Jogador/{id}", (Func<string, Task<dynamic>>)(async id =>
 {
     try
     {
@@ -217,11 +295,50 @@ app.MapGet("/Jogo/{id}", (Func<string, Task<dynamic>>)(async id =>
     }
 }));
 
+app.MapGet("/Jogo/Jogador/{idJogador}", (Func<string, Task<dynamic>>)(async idJogador =>
+{
+    try
+    {
+        var result = (await mongoContext.Jogadores.FindAsync(p => p.Id == idJogador)).FirstOrDefault();
+        if (result == null)
+            return new ErroReturn { Erro = $"Não existe jogador cadastrado no id {idJogador}" };
+
+        var jogos = new List<Jogo>();
+
+        foreach (var item in result.Jogos)
+            jogos.Add(mongoContext.Jogos.Find(j => j.Id == item).FirstOrDefault());
+
+        return result;
+    }
+    catch (Exception)
+    {
+        return new ErroReturn { Erro = "erro: id invalido" };
+    }
+}));
+
 app.MapPost("/Jogo", (Func<Jogo, Task<dynamic>>) (async insert =>
 {
     try
     {
         await mongoContext.Jogos.InsertOneAsync(insert);
+
+        if (insert.Jogadores != null || insert.Jogadores.Any())
+        {
+            foreach (var item in insert.Jogadores)
+            {
+                var jogador = (await mongoContext.Jogadores.FindAsync(j => j.Id == item)).FirstOrDefault();
+
+                if(jogador != null)
+                {
+                    if (jogador.Jogos != null)
+                        jogador.Jogos.Add(insert.Id);
+                    else
+                        jogador.Jogos = new List<string> { insert.Id };
+
+                    await mongoContext.Jogadores.ReplaceOneAsync(j => j.Id == jogador.Id, jogador);
+                }
+            }
+        }
     }
     catch (Exception e)
     {
@@ -235,7 +352,7 @@ app.MapPut("/Jogo/", (Func<Jogo, Task<dynamic>>) (async  update =>
 {
     try
     {
-        var result = (await mongoContext.Jogos.FindAsync(j => j.Id == update.Id)).FirstOrDefault();
+        var result = (await mongoContext.Jogos.FindAsync(j => j.Id == update.Id)).FirstOrDefault(); 
 
         if (result == null)
             return new ErroReturn { Erro = $"não existe jogo cadastrado no id {update.Id}" };
@@ -260,8 +377,9 @@ app.MapPut("/Jogo/{idJogo}/{idJogador}", async (string idJogo, string idJogador)
         throw new Exception("Não existe jogador com esse id");
 
     update.Jogadores.Add(player.Id);
-
+    player.Jogos.Add(update.Id);
     var result = await mongoContext.Jogos.ReplaceOneAsync(f => f.Id == update.Id, update);
+
     return update;
 });
 
@@ -270,6 +388,7 @@ app.MapDelete("/Jogo/{id}", (Func<string, Task<dynamic>>)(async id =>
     try
     {
         var result = await mongoContext.Jogos.FindOneAndDeleteAsync(p => p.Id == id);
+
         return result;
     }
     catch (Exception)
