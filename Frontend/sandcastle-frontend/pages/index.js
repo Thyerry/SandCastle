@@ -1,11 +1,32 @@
 import Head from 'next/head'
-import Link from 'next/link'
-import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 import Form from '../components/form'
 import Button from "@material-tailwind/react/Button";
+import Router from 'next/router'
+import { useState } from 'react';
 
 export default function Home() {
+
+  const [error, setError] = useState('');
+
+
+  const createNewGameSession = async () => {
+    const randHex =  [...Array(24)].map(() => Math.floor(Math.random() * 16).toString(16)).join('');
+    let res = await fetch("localhost:2525/Jogo", {
+      body: JSON.stringify({
+        id: randHex
+    }), headers : {
+        'Content-Type': 'application/json'
+    }, 
+    method: 'POST'
+    })
+    if(!("erro" in result)) {
+      localStorage.setItem("session", randHex)
+      Router.push(`game-session`) 
+    }  
+    setError(res.erro)
+  }
+
   return (
     <div className={styles.container}>
       <Head>
@@ -19,8 +40,9 @@ export default function Home() {
           Welcome to SandCaslte!
         </h1>
         <Form />
-        <Link href="/game-session"><Button size="sm" color="blueGray">Create New Session</Button></Link>
-      
+       <Button onClick={createNewGameSession}>Create New Session</Button>
+       {error && <p className="text-red-700"> {error}</p>}
+
       </main>
     </div>
   )
