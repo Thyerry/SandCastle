@@ -8,8 +8,8 @@ services:
   sandcastle-backend:
     image: ${DOCKER_REGISTRY-}sandcastlebackend
     build:
-      context: .
-      dockerfile: SandCastle-BackEnd/Dockerfile
+      context: ../Backend/SandCastle-BackEnd
+      dockerfile: ./SandCastle-BackEnd/Dockerfile
 
 volumes:
     mongo_data:
