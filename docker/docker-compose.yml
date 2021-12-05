@@ -1,4 +1,4 @@
-version: '3.4'
+version: '3.5'
 
 services:
   sandcastle-db:
@@ -10,6 +10,10 @@ services:
     build:
       context: ../Backend/SandCastle-BackEnd
       dockerfile: ./SandCastle-BackEnd/Dockerfile
-
+  sandcastle-frontend:
+    image: ${DOCKER_REGISTRY-}sandcastlefrontend
+    build:
+      context: ../Frontend/sandcastle-frontend
+      dockerfile: ./Dockerfile
 volumes:
     mongo_data:

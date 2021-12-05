@@ -19,7 +19,7 @@ export default function Home() {
           Welcome to SandCaslte!
         </h1>
         <Form />
-        <Link href="api/hello"><Button size="sm" color="blueGray">Create New Session</Button></Link>
+        <Link href="/game-session"><Button size="sm" color="blueGray">Create New Session</Button></Link>
       
       </main>
     </div>

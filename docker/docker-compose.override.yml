@@ -1,4 +1,4 @@
-version: '3.4'
+version: '3.5'
 
 services:
   sandcastle-db:
@@ -19,3 +19,8 @@ services:
         - sandcastle-db
     ports:
       - "2525:2525"
+  sandcastle-frontend:
+    container_name: sandcastle-front
+    restart: always
+    ports:
+      - "3000:3000"

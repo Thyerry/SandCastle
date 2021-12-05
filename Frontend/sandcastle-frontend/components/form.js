@@ -30,7 +30,7 @@ export default function Form() {
         <form onSubmit={joinSession}>
             <div className="flex-col justify-center items-center"> 
                 <input placeholder="Existing Session?" id="inputSession" name="inputSession" type="text" required className="border-b-2 flex"/>
-                <Button block="true" size="sm" type="submit"> Join Session! </Button>
+                <Button block="true" size="sm"  type="submit"> Join Session! </Button>
             </div>
             {error && <p className="text-red-700"> {error}</p>}
         </form>
