@@ -8,6 +8,6 @@ namespace SandCastle_BackEnd.Entidades
         [BsonId]
         [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
         public string? Id { get; set; }
-        public List<string>? Jogadores { get; set; }
+        public List<string>? Fichas { get; set; }
     }
 }

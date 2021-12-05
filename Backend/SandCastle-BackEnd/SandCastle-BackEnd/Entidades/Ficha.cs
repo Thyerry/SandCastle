@@ -7,7 +7,6 @@ namespace SandCastle_BackEnd.Entidades
         [BsonId]
         [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
         public string? Id { get; set; }
-        public string? IdJogador { get; set; }
         public string? IdJogo { get; set; }
         [BsonElement("Nome")]
         public string? Nome { get; set; }
