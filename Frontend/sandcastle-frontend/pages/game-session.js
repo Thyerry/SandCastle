@@ -18,7 +18,7 @@ export default function Game() {
 
     // TODO - arrumar endpoint
     const getAllPlayerCards = async () => {
-        return await fetch("/api/hello", {
+        return await fetch(`http://127.0.0.1:2525/Fichas/${localStorage.session}`, {
             headers: {
                 'Content-Type': 'application/json',
             }
@@ -32,7 +32,7 @@ export default function Game() {
     }
 
     return (
-        <div className="flex-row flex bg-gradient-to-b from-gray-500 to-gray-50 h-full">
+        <div className="flex-row mt-12 ml-12 flex bg-gradient-to-b from-gray-500 to-gray-50 h-full">
             <div className="max-w-2xl flex flex-col">
                     <Button size="sm" color="blueGray"onClick={(e) => setShowModal(true)}> Nova Ficha </Button>
                 {cards && <PlayerCardList cards={cards} />}

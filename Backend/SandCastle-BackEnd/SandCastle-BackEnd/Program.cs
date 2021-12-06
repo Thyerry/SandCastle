@@ -4,16 +4,19 @@ using SandCastle_BackEnd.MongoRelated;
 using System.Net;
 
 // Configurações de Build
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddCors(options => 
+builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: "_myAllowAnyOrigins",
+    options.AddPolicy(name: MyAllowSpecificOrigins,
                       builder =>
                       {
-                          builder.AllowAnyOrigin();
+                          builder.WithOrigins("http://localhost:3000",
+                                              "http://www.contoso.com");
                       });
 });
 
@@ -26,7 +29,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseSwagger();
-app.UseCors();
+app.UseCors(MyAllowSpecificOrigins);
 #region Fichas
 
 // Pega todas as Fichas

@@ -12,7 +12,7 @@ export default function Home() {
 
   const createNewGameSession = async () => {
     const randHex =  [...Array(24)].map(() => Math.floor(Math.random() * 16).toString(16)).join('');
-    let res = await fetch("localhost:2525/Jogo", {
+    let res = await fetch("http://127.0.0.1:2525/Jogo", {
       body: JSON.stringify({
         id: randHex
     }), headers : {
@@ -20,6 +20,8 @@ export default function Home() {
     }, 
     method: 'POST'
     })
+
+    let result = res.json()
     if(!("erro" in result)) {
       localStorage.setItem("session", randHex)
       Router.push(`game-session`) 
