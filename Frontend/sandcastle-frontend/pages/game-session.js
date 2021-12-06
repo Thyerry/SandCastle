@@ -12,13 +12,12 @@ export default function Game() {
     useEffect(async () => {
         let cards = await getAllPlayerCards()
         let res = await cards.json();
-        // TODO trocar cards pra res 
-        setCards([res, res])
+        console.log(res)
+        setCards(res)
     },[])
 
-    // TODO - arrumar endpoint
     const getAllPlayerCards = async () => {
-        return await fetch(`http://127.0.0.1:2525/Fichas/${localStorage.session}`, {
+        return await fetch(`http://127.0.0.1:2525/Fichas/Jogo/${localStorage.session}`, {
             headers: {
                 'Content-Type': 'application/json',
             }

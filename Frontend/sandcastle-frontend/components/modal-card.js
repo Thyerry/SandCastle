@@ -13,7 +13,7 @@ export default function ModalCard({showModal, setShowModal, setCards, cards}) {
 
     const handleSubmit = async event => {
         event.preventDefault()
-        const endpoint = 'localhost:2525/Fichas';
+        const endpoint = 'http://localhost:2525/Fichas';
         let { Nome, Classe, Especificidades, Força, Inteligencia, Vigor} = event.target
         let newCard = {
             Nome : Nome.value,
